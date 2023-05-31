@@ -6,9 +6,12 @@ const Context = createContext();
 export const StateContext = ({ children }) => {
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState();
-  const [totalQuantities, setTotalQuantities] = useState();
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalQuantities, setTotalQuantities] = useState(0);
   const [qty, setQty] = useState(1);
+
+  let foundProduct;
+  let index;
 
   const onAdd = (product, quantity) => {
     const checkProductInCart = cartItems.find((item) => item._id === product._id);
@@ -31,7 +34,34 @@ export const StateContext = ({ children }) => {
       setCartItems([...cartItems, {...product}])
     }
     
-    toast.success(`${qty} ${product.name} has been added to your cart.`);
+    toast.success(`${product.name} added to your cart.`);
+  }
+
+  const onRemove = (id) => {
+    foundProduct = cartItems.find((item) => item._id === id);
+    index = cartItems.findIndex((product) => product._id === id);
+
+    setCartItems(cartItems.toSpliced(index, 1));
+    setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price * foundProduct.quantity);
+    setTotalQuantities((prevTotalQuantities) => prevTotalQuantities - foundProduct.quantity);
+  }
+
+  const toggleCartItemQty = (id, value) => {
+    foundProduct = cartItems.find((item) => item._id === id);
+    index = cartItems.findIndex((product) => product._id === id);
+
+    if (value === 'inc') {      
+      setCartItems(cartItems.toSpliced(index, 1, { ...foundProduct, quantity: foundProduct.quantity + 1 }));
+      setTotalPrice((prevTotalPrice) => prevTotalPrice + foundProduct.price);
+      setTotalQuantities((prevTotalQuantities) => prevTotalQuantities + 1)
+    } else if (value === 'dec') {
+      if (foundProduct.quantity > 1) {
+        setCartItems(cartItems.toSpliced(index, 1, { ...foundProduct, quantity: foundProduct.quantity - 1 }));
+        setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price);
+        setTotalQuantities((prevTotalQuantities) => prevTotalQuantities - 1)
+      }
+    }
+
   }
 
   const incQty = () => {
@@ -56,7 +86,10 @@ export const StateContext = ({ children }) => {
         qty,
         incQty,
         decQty,
-        onAdd
+        onAdd,
+        setShowCart,
+        toggleCartItemQty,
+        onRemove
       }}
     >
       {children}
