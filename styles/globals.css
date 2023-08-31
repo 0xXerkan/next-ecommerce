@@ -160,7 +160,7 @@ span.text-red {
 .hero-banner-container h1 {
   color: white;
   font-size: 10em;
-  margin-left: -20px;
+  /* margin-left: -20px; */
   text-transform: uppercase;
 }
 .hero-banner-image {
@@ -235,10 +235,11 @@ span.text-red {
 .banner-desc .left h3 {
   font-weight: 900;
   font-size: 80px;
-  margin-left: 25px;
+  margin-left: 30px;
 }
 .banner-desc .left p {
   margin: 18px;
+  margin-bottom: 10px;
 }
 .footer-banner-image {
   position: absolute;
@@ -296,6 +297,7 @@ span.text-red {
   font-size: 30px;
   display: flex;
   gap: 10px;
+  cursor: pointer;
 }
 .cart-heading {
   display: flex;
